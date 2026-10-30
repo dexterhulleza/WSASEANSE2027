@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASEAN 2027 Skills Registry</title>
+<meta name="description" content="WorldSkills ASEAN Special Edition 2027 skills, entries and delegation registry.">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: navy masthead band with tab nav, then one working column of panels and tables (registry desk). */
+:root {
+  --bg: #F3F6F9; --surface: #FFFFFF; --surface-2: #EAF2F7; --ink: #0E2133; --muted: #56697C; --line: #D6E0E8;
+  --band: #003764; --band-ink: #FFFFFF; --band-muted: #9FC6DA;
+  --accent: #0084AD; --accent-ink: #FFFFFF; --accent-soft: #DCEFF6;
+  --yellow: #FEE300; --good: #157A5F; --good-soft: #DDF3EB; --warn: #B44A00; --warn-soft: #FFE8D9;
+  --bad: #B30D57; --bad-soft: #FBE1EC; --neutral-soft: #E9EDF1;
+  --font-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0A1520; --surface: #102131; --surface-2: #15293C; --ink: #E4EDF5; --muted: #93A8BB; --line: #23394D;
+  --band: #0B2B48; --band-ink: #FFFFFF; --band-muted: #8DB8CF;
+  --accent: #3FB5DD; --accent-ink: #04202E; --accent-soft: #123A4E;
+  --yellow: #FEE300; --good: #5FD1A9; --good-soft: #10352B; --warn: #FFA266; --warn-soft: #3A2414;
+  --bad: #FF7BB0; --bad-soft: #3A1426; --neutral-soft: #1B2D3E; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0A1520; --surface: #102131; --surface-2: #15293C; --ink: #E4EDF5; --muted: #93A8BB; --line: #23394D;
+  --band: #0B2B48; --band-ink: #FFFFFF; --band-muted: #8DB8CF;
+  --accent: #3FB5DD; --accent-ink: #04202E; --accent-soft: #123A4E;
+  --yellow: #FEE300; --good: #5FD1A9; --good-soft: #10352B; --warn: #FFA266; --warn-soft: #3A2414;
+  --bad: #FF7BB0; --bad-soft: #3A1426; --neutral-soft: #1B2D3E; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.45; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: 1.75rem; } h2 { font-size: 1.2rem; } h3 { font-size: 1rem; }
+button, input, select, textarea { font: inherit; color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* masthead */
+.top { background: var(--band); color: var(--band-ink); }
+.top .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; padding-block: 14px 0; }
+.brand { display: flex; align-items: baseline; gap: 10px; flex: 1 1 260px; min-width: 0; }
+.brand b { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; letter-spacing: 0.01em; }
+.brand span { color: var(--band-muted); font-size: 0.85rem; }
+.who { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.9rem; }
+.who img { width: 28px; height: 28px; border-radius: 50%; }
+.who select { background: var(--band); color: var(--band-ink); border: 1px solid var(--band-muted); border-radius: 6px; padding: 3px 6px; }
+.role { color: var(--yellow); font-weight: 600; }
+nav.tabs { flex-basis: 100%; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs a { color: var(--band-muted); text-decoration: none; padding: 10px 14px; border-radius: 8px 8px 0 0; font-weight: 600; white-space: nowrap; }
+nav.tabs a:hover { color: var(--band-ink); }
+nav.tabs a[aria-current="page"] { background: var(--bg); color: var(--ink); }
+nav.tabs a:focus-visible { outline: 2px solid var(--yellow); outline-offset: -2px; }
+
+main { padding-block: 24px 64px; display: grid; gap: 20px; }
+.pagehead { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; justify-content: space-between; }
+.pagehead p { margin: 4px 0 0; max-width: 70ch; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.panel-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.grid2 { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+
+.stats { display: flex; flex-wrap: wrap; gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 16px; min-width: 120px; }
+.stat b { display: block; font-family: var(--font-display); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+.chip[aria-pressed="true"] { background: var(--band); color: var(--band-ink); border-color: var(--band); }
+input[type=search], input[type=text], input[type=date], input[type=number], select, textarea {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-width: 0; max-width: 100%; }
+textarea { width: 100%; min-height: 70px; resize: vertical; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, .chip:focus-visible, a:focus-visible, tr[tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 7px 14px; cursor: pointer; font-weight: 600; white-space: nowrap; }
+.btn:hover { background: var(--surface-2); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.danger { color: var(--bad); }
+.btn.small { padding: 4px 10px; font-size: 0.88rem; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); background: var(--surface-2); white-space: nowrap; }
+tbody tr:last-child td { border-bottom: 0; }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--surface-2); }
+td .sub { display: block; color: var(--muted); font-size: 0.85rem; }
+
+.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; background: var(--neutral-soft); color: var(--ink); }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.info { background: var(--accent-soft); color: var(--accent); }
+.host { display: inline-block; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 5px; background: var(--band); color: var(--band-ink); }
+
+.meter { position: relative; height: 8px; border-radius: 4px; background: var(--neutral-soft); min-width: 90px; }
+.meter i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--accent); }
+.meter i.over { background: var(--bad); }
+.meter u { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); text-decoration: none; }
+
+dl.facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+dl.facts dt { color: var(--muted); } dl.facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.doclist { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.doclist li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.doclist a { color: var(--accent); font-weight: 600; overflow-wrap: anywhere; }
+.empty { padding: 18px; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); }
+.note { padding: 12px 14px; border-radius: var(--radius); background: var(--accent-soft); }
+.note.warn { background: var(--warn-soft); }
+
+/* modal */
+#modal { position: fixed; inset: 0; z-index: 50; background: rgba(5, 15, 25, 0.55); display: grid; place-items: start center; overflow-y: auto;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.sheet { background: var(--bg); border-radius: 14px; width: min(760px, 100%); margin-block: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
+.sheet-head { background: var(--band); color: var(--band-ink); border-radius: 14px 14px 0 0; padding: 16px 18px; display: flex; gap: 12px; align-items: start; justify-content: space-between; }
+.sheet-head .x { background: transparent; border: 1px solid var(--band-muted); color: var(--band-ink); border-radius: 8px; padding: 4px 10px; cursor: pointer; }
+.sheet-body { padding: 18px; display: grid; gap: 16px; }
+form.f { display: grid; gap: 12px; }
+.frow { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+label.fl { display: grid; gap: 4px; font-weight: 600; font-size: 0.92rem; }
+label.fl small { font-weight: 400; color: var(--muted); }
+label.chk { display: flex; gap: 8px; align-items: center; font-weight: 600; }
+.factions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.err { color: var(--bad); font-weight: 600; margin: 0; }
+.linkbtn { background: transparent; border: 1px solid var(--band-muted); color: var(--band-ink); border-radius: 6px; padding: 3px 10px; cursor: pointer; font-weight: 600; }
+.linkbtn:hover { background: rgba(255,255,255,0.08); }
+.auth { display: grid; place-items: start center; padding-block: 12px; }
+.auth .panel { width: min(440px, 100%); gap: 14px; }
+.authlogo { width: 150px; height: auto; }
+.brand img { height: 44px; width: auto; align-self: center; }
+code.pw { font-size: 1.05rem; background: var(--surface); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--line); user-select: all; }
+a.btn { text-decoration: none; color: inherit; display: inline-block; }
+#toast { position: fixed; z-index: 60; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--band); color: var(--band-ink); padding: 10px 18px; border-radius: 999px; font-weight: 600; max-width: calc(100% - 32px); }
+.hits { display: grid; gap: 6px; }
+.hit { display: flex; align-items: center; gap: 10px; justify-content: space-between; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; flex-wrap: wrap; }
+.hit img { width: 24px; height: 24px; border-radius: 50%; }
+@media (prefers-reduced-motion: no-preference) { .sheet { animation: rise .18s ease-out; } @keyframes rise { from { transform: translateY(8px); opacity: .6; } } }
+</style>
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 16px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><img src="/logo-white.png" alt=""><b>WorldSkills ASEAN 2027</b><span>Special Edition · Skills Registry</span></div>
+    <div class="who" id="who"></div>
+    <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+  </div>
+</header>
+<main class="wrap" id="main"><div class="empty">Loading the registry…</div></main>
+<div id="modal" hidden></div>
+<div id="toast" role="status" hidden></div>
+<script src="/app.js"></script>
+</body>
+</html>

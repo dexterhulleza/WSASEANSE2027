@@ -1,0 +1,46 @@
+# Hostinger VPS (or any Docker host): app + Caddy for automatic HTTPS.
+# Set DOMAIN, ADMIN_EMAIL and ADMIN_PASSWORD in a .env file next to this one
+# (or in Hostinger Docker Manager's environment fields). See README.md.
+services:
+  app:
+    image: ghcr.io/dexterhulleza/wsaseanse2027:latest
+    build: .
+    restart: unless-stopped
+    environment:
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_NAME: ${ADMIN_NAME:-Central Secretariat}
+      ALLOW_SIGNUP: ${ALLOW_SIGNUP:-true}
+      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Manila}
+      SESSION_DAYS: ${SESSION_DAYS:-7}
+      COOKIE_SECURE: "true"
+      TRUST_PROXY: "true"
+    volumes:
+      - registry_data:/data
+    expose:
+      - "3000"
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  caddy:
+    image: caddy:2.8.4-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    command: caddy reverse-proxy --from ${DOMAIN:?Set DOMAIN, e.g. registry.example.org} --to app:3000
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+volumes:
+  registry_data:
+  caddy_data:
+  caddy_config:

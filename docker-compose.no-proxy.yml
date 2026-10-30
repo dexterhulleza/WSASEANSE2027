@@ -1,0 +1,24 @@
+# Use this instead of docker-compose.yml when the VPS already runs a reverse proxy
+# (Traefik, Nginx Proxy Manager, another Caddy) on ports 80/443.
+# The app listens on 127.0.0.1:3000; point your proxy at it and give it HTTPS.
+services:
+  app:
+    image: ghcr.io/dexterhulleza/wsaseanse2027:latest
+    build: .
+    restart: unless-stopped
+    environment:
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_NAME: ${ADMIN_NAME:-Central Secretariat}
+      ALLOW_SIGNUP: ${ALLOW_SIGNUP:-true}
+      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Manila}
+      SESSION_DAYS: ${SESSION_DAYS:-7}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      TRUST_PROXY: "true"
+    volumes:
+      - registry_data:/data
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  registry_data:

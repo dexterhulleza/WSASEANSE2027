@@ -1,0 +1,14 @@
+{
+  "name": "ws-asean-2027-registry",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WorldSkills ASEAN Special Edition 2027 skills, entries and delegation registry",
+  "main": "server.js",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "test": "node --test test/*.test.js",
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup.js"
+  },
+  "license": "UNLICENSED"
+}
