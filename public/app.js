@@ -153,7 +153,7 @@
         skills: d.skills || [], hosts: d.hosts || {}, stats: d.stats || {}, totals: d.totals || { entries: 0, countries: 0 },
         entries: d.entries || [], delegates: d.delegates || [], people: d.people || {}, users: d.users || [], log: d.log || [],
       });
-      S.ready = true; render(true);
+      S.ready = true; syncLogo(); render(true);
       if (S.me && S.me.mustChange && !S.pwPrompted && $("#modal").hidden) { S.pwPrompted = true; passwordForm(true); }
     } catch (e) { S.ready = true; render(true); }
   }
@@ -167,6 +167,8 @@
   function busyTyping() { const a = document.activeElement; return !!(a && a.matches("input, select, textarea") && (a.closest("#main form") || a.closest("#modal"))); }
   function scheduleRefresh() { if (busyTyping() || !$("#modal").hidden) { S.deferred = true; return; } S.deferred = false; refresh(); }
   function resolveNames() {}
+  const logoSrc = () => { const b = (S.settings && S.settings.branding) || {}; return `/api/branding/logo${b.logoId ? `?v=${encodeURIComponent(b.logoId)}` : S.logoBust ? `?v=${S.logoBust}` : ""}`; };
+  function syncLogo() { const img = $("#brand-logo"); const src = logoSrc(); if (img && img.getAttribute("src") !== src) img.setAttribute("src", src); }
 
   /* ---------- render ---------- */
   function render(skipNames) {
@@ -255,7 +257,7 @@
   function viewAuth() {
     const signup = S.authView === "signup" && S.signupAllowed;
     return `<div class="auth"><div class="panel">
-      <img src="/logo-red.png" alt="WorldSkills ASEAN Special Edition 2027" class="authlogo">
+      <div class="authlogo"><img src="${logoSrc()}" alt="Event logo"></div>
       <h1>${signup ? "Request an account" : "Sign in"}</h1>
       <p class="muted" style="margin:0">${signup ? "For Country Secretariat staff. The Central Secretariat approves each request." : "Skills registry for the Central, Host and Country Secretariats."}</p>
       <form class="f" data-form="${signup ? "signup" : "login"}">
@@ -434,6 +436,11 @@
           </tbody></table></div>` : `<div class="empty">No skills yet.</div>`}</div>
       <div class="panel"><div class="panel-head"><h2>Entry decisions</h2><span class="muted">Set each entry's decision; edit an entry to change its stage</span></div>
         ${entries.length ? entryTable(entries, { showSkill: true, decide: true }) : `<div class="empty">No entries yet. Country Secretariats add them from their entries page.</div>`}</div>
+      <div class="panel"><div class="panel-head"><h2>Event logo</h2><span class="muted">Shown at the top left of every page and on the sign-in page</span></div>
+        <div class="logo-preview"><img src="${logoSrc()}" alt="Current event logo"><span>WorldSkills ASEAN 2027</span></div>
+        <form class="f" data-form="logo"><div class="frow"><label class="fl">New logo <small>PNG, JPG or WEBP, up to 2 MB. Use a white or light logo with a transparent background, at least 96 px tall, as it sits on the navy bar.</small><input type="file" name="file" id="logo-file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" required></label></div>
+          <p class="err" id="form-err" hidden></p>
+          <div class="factions">${(S.settings.branding || {}).logoId ? `<button type="button" class="btn" data-act="logo-reset">Restore default logo</button>` : ""}<button class="btn primary" type="submit">Upload logo</button></div></form></div>
       <div class="grid2">
         <div class="panel"><h2>Delegation registration</h2>
           <form class="f" data-form="roles">
@@ -584,6 +591,15 @@
       if (res) { S.newPw = { name: v("name"), password: res.password }; render(); }
       return;
     }
+    if (kind === "logo") {
+      const file = fd.get("file"); if (!file || !file.size) return formErr("Choose an image file.");
+      const ext = (file.name.split(".").pop() || "").toLowerCase();
+      const type = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp" }[ext];
+      if (!type) return formErr("Use a PNG, JPG or WEBP image.");
+      if (file.size > 2 * 1024 * 1024) return formErr("The logo is over 2 MB. Export a smaller version and try again.");
+      if (await hold(api("POST", `/api/branding/logo?${new URLSearchParams({ name: file.name })}`, file, "Event logo updated", { raw: true, type }))) { form.reset(); syncLogo(); }
+      return;
+    }
     if (kind === "settings") {
       const hosts = fd.getAll("host");
       if (v("windowStart") && v("windowEnd") && v("windowEnd") < v("windowStart")) { toast("The window must close after it opens."); return; }
@@ -681,6 +697,7 @@
     else if (a === "auth-switch") { S.authView = S.authView === "signup" ? "login" : "signup"; render(); }
     else if (a === "logout") { await api("POST", "/api/auth/logout", {}, "", { noRefresh: true, auth: true }); stopLive(); S.me = null; S.actingAs = ""; S.newPw = null; S.pwPrompted = false; closeModal(); location.hash = ""; render(); }
     else if (a === "password") passwordForm(false);
+    else if (a === "logo-reset") { if (!confirmOnce("Confirm restore")) return; if (await api("DELETE", "/api/branding/logo", undefined, "Default logo restored")) { S.logoBust = Date.now(); syncLogo(); render(); } }
     else if (a === "open-skill") { S.openSkill = id; renderSkillSheet(); }
     else if (a === "f-host") { S.filter.host = t.dataset.v; render(true); }
     else if (a === "add-skill") skillForm(null);

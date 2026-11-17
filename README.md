@@ -6,7 +6,7 @@ A web registry for the Central, Host and Country Secretariats:
 - **Entries**: Country Secretariats register competitors or teams in any skill, only while a registration stage (Interest, Provisional, Definitive) is open. The stage is set by the schedule, never chosen by hand.
 - **Delegations**: each country registers its Official Delegate, Technical Delegate, Technical Delegate Assistants, Team Leaders and any extra roles, within the places the Central Secretariat allows.
 - **Host desk**: host countries manage their skills, host information and documents, and record a decision on every entry they receive.
-- **Central**: registration periods, host countries, roles and places, accounts, demand vs capacity, entry decisions, CSV exports and an activity log.
+- **Central**: registration periods, host countries, roles and places, accounts, the event logo, demand vs capacity, entry decisions, CSV exports and an activity log.
 
 The rules are enforced by the server, not just the page: a country can only read and change its own entries, delegation and files; hosts only their own skills; registration windows and delegation places are checked on every save.
 

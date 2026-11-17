@@ -552,6 +552,47 @@ route('DELETE', '/api/delegates/:id', ({ user, params }) => {
   return { ok: true };
 });
 
+/* =============================================================== BRANDING */
+// Event logo shown at the top left of every page and on the sign-in page.
+const LOGO_TYPES = { 'image/png': (b) => b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
+  'image/jpeg': (b) => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff,
+  'image/webp': (b) => b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WEBP' };
+const DEFAULT_LOGO = path.join(CFG.publicDir, 'logo-white.png');
+route('GET', '/api/branding/logo', ({ req, res }) => {
+  const b = getSettings().branding || {};
+  const custom = b.logoId && fs.existsSync(path.join(UPLOAD_DIR, b.logoId));
+  const etag = `"${custom ? b.logoId : 'default'}"`;
+  const headers = { 'Cache-Control': 'no-cache', ETag: etag, 'Content-Security-Policy': "sandbox; default-src 'none'" };
+  if (req.headers['if-none-match'] === etag) { res.writeHead(304, headers); res.end(); return undefined; }
+  const file = custom ? path.join(UPLOAD_DIR, b.logoId) : DEFAULT_LOGO;
+  res.writeHead(200, { ...headers, 'Content-Type': custom ? b.mime : 'image/png', 'Content-Length': fs.statSync(file).size });
+  fs.createReadStream(file).pipe(res);
+  return undefined;
+}, { auth: 'none' });
+route('POST', '/api/branding/logo', async ({ req, user, query }) => {
+  if (!isCentral(user)) fail(403, 'Only the Central Secretariat changes the event logo.');
+  const mime = String(req.headers['content-type'] || '').split(';')[0].trim().toLowerCase();
+  if (!LOGO_TYPES[mime]) fail(415, 'Upload the logo as PNG, JPG or WEBP. PNG with a transparent background works best.');
+  const buf = await readBody(req, 2 * 1024 * 1024);
+  if (!buf.length) fail(400, 'The file is empty.');
+  if (!LOGO_TYPES[mime](buf)) fail(415, "This file isn't a valid PNG, JPG or WEBP image.");
+  const id = 'logo-' + crypto.randomBytes(12).toString('hex');
+  fs.writeFileSync(path.join(UPLOAD_DIR, id), buf);
+  const st = getSettings(), old = (st.branding || {}).logoId;
+  putSettings({ ...st, branding: { logoId: id, mime, name: str(query.get('name'), 150) || 'logo', size: buf.length, by: user.id, at: Date.now() } });
+  if (old) fs.rmSync(path.join(UPLOAD_DIR, old), { force: true });
+  changed(user, 'CENTRAL', 'Changed event logo', str(query.get('name'), 150));
+  return { ok: true, id };
+}, { raw: true });
+route('DELETE', '/api/branding/logo', ({ user }) => {
+  if (!isCentral(user)) fail(403, 'Only the Central Secretariat changes the event logo.');
+  const st = getSettings(), old = (st.branding || {}).logoId;
+  putSettings({ ...st, branding: {} });
+  if (old) fs.rmSync(path.join(UPLOAD_DIR, old), { force: true });
+  changed(user, 'CENTRAL', 'Restored default event logo', '');
+  return { ok: true };
+});
+
 /* ================================================================== FILES */
 function fileTargetCheck(user, scope, target, st) {
   if (scope === 'skill') { const sk = store.get('skills', target); if (!sk) fail(404, 'Skill not found.'); if (!canEditSkill(user, sk, st)) fail(403, "You can only add documents to your own country's skills."); return sk.name; }

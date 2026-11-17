@@ -135,8 +135,12 @@ label.chk { display: flex; gap: 8px; align-items: center; font-weight: 600; }
 .linkbtn:hover { background: rgba(255,255,255,0.08); }
 .auth { display: grid; place-items: start center; padding-block: 12px; }
 .auth .panel { width: min(440px, 100%); gap: 14px; }
-.authlogo { width: 150px; height: auto; }
-.brand img { height: 44px; width: auto; align-self: center; }
+.authlogo { background: var(--band); border-radius: var(--radius); padding: 16px; display: grid; place-items: center; }
+.authlogo img { max-height: 120px; max-width: 100%; width: auto; }
+.logo-preview { background: var(--band); border-radius: var(--radius); padding: 14px 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; min-width: 0; }
+.logo-preview img { height: 44px; width: auto; max-width: 220px; object-fit: contain; }
+.logo-preview span { color: var(--band-ink); font-family: var(--font-display); font-weight: 800; }
+.brand img { height: 44px; width: auto; max-width: 200px; object-fit: contain; align-self: center; }
 code.pw { font-size: 1.05rem; background: var(--surface); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--line); user-select: all; }
 a.btn { text-decoration: none; color: inherit; display: inline-block; }
 #toast { position: fixed; z-index: 60; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--band); color: var(--band-ink); padding: 10px 18px; border-radius: 999px; font-weight: 600; max-width: calc(100% - 32px); }
@@ -155,7 +159,7 @@ img { max-width: 100%; }
 <body>
 <header class="top">
   <div class="wrap">
-    <div class="brand"><img src="/logo-white.png" alt=""><b>WorldSkills ASEAN 2027</b><span>Special Edition · Skills Registry</span></div>
+    <div class="brand"><img src="/api/branding/logo" alt="Event logo" id="brand-logo"><b>WorldSkills ASEAN 2027</b><span>Special Edition · Skills Registry</span></div>
     <div class="who" id="who"></div>
     <nav class="tabs" id="tabs" aria-label="Sections"></nav>
   </div>

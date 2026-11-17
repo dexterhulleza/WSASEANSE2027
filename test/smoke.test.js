@@ -143,3 +143,19 @@ test('withdraw works any time; the last central account is protected', async () 
   assert.equal((await central('GET', '/api/export/entries.csv')).status, 200);
   assert.equal((await vn('GET', '/api/export/entries.csv')).status, 403);
 });
+
+test('only central changes the event logo; everyone (even signed out) sees it', async () => {
+  const png = Buffer.from('89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d4944415478da63f8ffff3f0005fe02fea7d6a4a60000000049454e44ae426082', 'hex');
+  const def = await fetch(base + '/api/branding/logo');
+  assert.equal(def.status, 200); assert.equal(def.headers.get('content-type'), 'image/png');
+  assert.equal((await vn('POST', '/api/branding/logo?name=logo.png', undefined, { raw: png, type: 'image/png' })).status, 403);
+  assert.equal((await central('POST', '/api/branding/logo', undefined, { raw: Buffer.from('<svg/>'), type: 'image/svg+xml' })).status, 415);
+  assert.equal((await central('POST', '/api/branding/logo', undefined, { raw: Buffer.from('not a png'), type: 'image/png' })).status, 415);
+  assert.equal((await central('POST', '/api/branding/logo?name=logo.png', undefined, { raw: png, type: 'image/png' })).status, 200);
+  const got = await fetch(base + '/api/branding/logo');
+  assert.deepEqual(Buffer.from(await got.arrayBuffer()), png);
+  assert.equal((await fetch(base + '/api/branding/logo', { headers: { 'If-None-Match': got.headers.get('etag') } })).status, 304);
+  assert.ok((await vn('GET', '/api/state')).data.settings.branding.logoId);
+  assert.equal((await central('DELETE', '/api/branding/logo')).status, 200);
+  assert.notDeepEqual(Buffer.from(await (await fetch(base + '/api/branding/logo')).arrayBuffer()), png);
+});
