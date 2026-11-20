@@ -159,3 +159,22 @@ test('only central changes the event logo; everyone (even signed out) sees it', 
   assert.equal((await central('DELETE', '/api/branding/logo')).status, 200);
   assert.notDeepEqual(Buffer.from(await (await fetch(base + '/api/branding/logo')).arrayBuffer()), png);
 });
+
+test('demo accounts and admin reset commands work against the live database', async () => {
+  const { execFileSync } = require('node:child_process');
+  const run = (script, ...args) => execFileSync(process.execPath, ['--disable-warning=ExperimentalWarning', path.join(__dirname, '..', 'scripts', script), ...args], { env: { ...process.env, DATA_DIR: dataDir }, encoding: 'utf8' });
+  const out = run('demo-accounts.js');
+  const line = out.split('\n').find((l) => l.includes('vn.secretariat@example.org'));
+  const pw = line.trim().split(/\s+/).pop();
+  const demo = client();
+  assert.equal((await demo('POST', '/api/auth/login', { email: 'vn.secretariat@example.org', password: pw })).status, 200);
+  const me = (await demo('GET', '/api/state')).data.me;
+  assert.equal(me.country, 'VN'); assert.equal(me.status, 'active'); assert.equal(me.mustChange, false);
+  assert.match(run('demo-accounts.js'), /already exists/);
+  const reset = run('reset-admin.js', 'central@example.org').match(/password for central@example\.org: (\S+)/)[1];
+  const admin = client();
+  assert.equal((await admin('POST', '/api/auth/login', { email: 'central@example.org', password: reset })).status, 200);
+  assert.equal((await admin('GET', '/api/state')).data.me.mustChange, true);
+  assert.match(run('demo-accounts.js', '--remove'), /Removed 11 demo accounts/);
+  assert.equal((await demo('GET', '/api/state')).status, 401);
+});

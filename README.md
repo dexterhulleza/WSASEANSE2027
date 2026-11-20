@@ -85,6 +85,20 @@ docker compose cp app:/data/backups ./backups-$(date +%F)
 
 Restore: stop the app, copy a `registry-*.db` snapshot over `/data/registry.db` in the volume, start again.
 
+## Account commands (run on the VPS, in the registry folder)
+
+```bash
+# Demo Country Secretariat accounts for all 11 countries (for testing and training).
+# Prints each email and password once: <code>.secretariat@example.org, e.g. vn.secretariat@example.org
+docker compose exec app npm run demo-accounts
+docker compose exec app npm run demo-accounts -- --reset    # new passwords for all demo accounts
+docker compose exec app npm run demo-accounts -- --remove   # delete them before go-live
+
+# Forgot the administrator password? Sets a new temporary one (asked to change at sign-in).
+docker compose exec app npm run reset-admin                  # lists Central Secretariat accounts
+docker compose exec app npm run reset-admin -- you@example.org
+```
+
 ## Settings (environment variables)
 
 | Variable | Default | Meaning |

@@ -8,7 +8,9 @@
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning server.js",
     "test": "node --test test/*.test.js",
-    "backup": "node --disable-warning=ExperimentalWarning scripts/backup.js"
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup.js",
+    "demo-accounts": "node --disable-warning=ExperimentalWarning scripts/demo-accounts.js",
+    "reset-admin": "node --disable-warning=ExperimentalWarning scripts/reset-admin.js"
   },
   "license": "UNLICENSED"
 }
