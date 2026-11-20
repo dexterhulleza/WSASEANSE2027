@@ -89,7 +89,7 @@ Restore: stop the app, copy a `registry-*.db` snapshot over `/data/registry.db` 
 
 ```bash
 # Demo Country Secretariat accounts for all 11 countries (for testing and training).
-# Prints each email and password once: <code>.secretariat@example.org, e.g. vn.secretariat@example.org
+# Prints each email and password once: <code>.secretariat@wsaseanse2027.tech, e.g. vn.secretariat@wsaseanse2027.tech
 docker compose exec app npm run demo-accounts
 docker compose exec app npm run demo-accounts -- --reset    # new passwords for all demo accounts
 docker compose exec app npm run demo-accounts -- --remove   # delete them before go-live

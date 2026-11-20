@@ -3,16 +3,19 @@
 //   docker compose exec app npm run demo-accounts            create missing accounts, print their passwords
 //   docker compose exec app npm run demo-accounts -- --reset give every demo account a new password
 //   docker compose exec app npm run demo-accounts -- --remove delete all demo accounts
-// Demo emails use the reserved example.org domain: <code>.secretariat@example.org (e.g. vn.secretariat@example.org).
+// Demo emails: <code>.secretariat@wsaseanse2027.tech (e.g. vn.secretariat@wsaseanse2027.tech).
+// The registry sends no email, so these addresses don't need a mailbox.
 const { COUNTRIES, openDb, hashPassword, tempPassword, newId, logAct } = require('./accounts-lib');
 
 const db = openDb();
 const mode = process.argv.includes('--remove') ? 'remove' : process.argv.includes('--reset') ? 'reset' : 'create';
-const emailFor = (c) => `${c.toLowerCase()}.secretariat@example.org`;
+const DOMAIN = 'wsaseanse2027.tech';
+const emailFor = (c, domain = DOMAIN) => `${c.toLowerCase()}.secretariat@${domain}`;
 
 if (mode === 'remove') {
   let n = 0;
-  for (const c of Object.keys(COUNTRIES)) n += Number(db.prepare('DELETE FROM users WHERE email = ?').run(emailFor(c)).changes);
+  // Also clears demo accounts made by the earlier version, which used example.org.
+  for (const c of Object.keys(COUNTRIES)) for (const d of [DOMAIN, 'example.org']) n += Number(db.prepare('DELETE FROM users WHERE email = ?').run(emailFor(c, d)).changes);
   logAct(db, 'Removed demo accounts', `${n} accounts`);
   console.log(`Removed ${n} demo accounts. Entries and delegates they added stay in the registry.`);
   process.exit(0);

@@ -164,10 +164,10 @@ test('demo accounts and admin reset commands work against the live database', as
   const { execFileSync } = require('node:child_process');
   const run = (script, ...args) => execFileSync(process.execPath, ['--disable-warning=ExperimentalWarning', path.join(__dirname, '..', 'scripts', script), ...args], { env: { ...process.env, DATA_DIR: dataDir }, encoding: 'utf8' });
   const out = run('demo-accounts.js');
-  const line = out.split('\n').find((l) => l.includes('vn.secretariat@example.org'));
+  const line = out.split('\n').find((l) => l.includes('vn.secretariat@wsaseanse2027.tech'));
   const pw = line.trim().split(/\s+/).pop();
   const demo = client();
-  assert.equal((await demo('POST', '/api/auth/login', { email: 'vn.secretariat@example.org', password: pw })).status, 200);
+  assert.equal((await demo('POST', '/api/auth/login', { email: 'vn.secretariat@wsaseanse2027.tech', password: pw })).status, 200);
   const me = (await demo('GET', '/api/state')).data.me;
   assert.equal(me.country, 'VN'); assert.equal(me.status, 'active'); assert.equal(me.mustChange, false);
   assert.match(run('demo-accounts.js'), /already exists/);
